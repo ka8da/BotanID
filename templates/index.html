@@ -10,7 +10,7 @@
 
   {% if session.username %}
   <p>
-    You are logged in as {{ session.username }}
+    You are logged in as {{ session.username }}, your user ID is {{ session.user_id }}
   </p>
   {% endif %}
 
@@ -19,6 +19,18 @@
     <a href="/register"> Create user </a>
     <a href="/logout"> Log out </a>
   </p>
+
+  <p>
+    <a href="/new_post">Ask the community</a>
+  </p>
+
+  <h2>All posts</h2>
+  <ul>
+      {% for post in posts %}
+      <li><a href="/post/{{ post.id }}">{{ post.title }}</a></li>
+      {% endfor %}
+  </ul>
+
 </body>
 
 </html>

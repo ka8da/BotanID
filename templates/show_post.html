@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ post.title }}</title>
+</head>
+
+<body>
+    <h1>{{ post.title }}</h1>
+    {% if session.user_id == post.user_id %}
+    <p>
+        <a href="/edit_post/{{ post.id }}">Edit post</a>
+    </p>
+    {% endif %}
+    <p> 
+        {{ post.description }}
+    </p>
+    <p>
+        User: {{ post.username }}
+    </p>
+    <p>
+        <a href="/">Go back</a>
+    </p>
+</body>
+
+</html>
