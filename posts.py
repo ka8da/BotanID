@@ -25,3 +25,15 @@ def update_post(post_id, title, description):
                                 description = ?
                             WHERE id = ?"""
     db.execute(sql, [title, description, post_id])
+
+def remove_post(post_id):
+    sql = "DELETE FROM posts WHERE id = ?"
+    db.execute(sql, [post_id])
+
+def find_posts(query):
+    sql = """   SELECT id, title
+                FROM posts
+                WHERE description LIKE ? OR title LIKE ?
+                ORDER BY id DESC"""
+    like = "%" + query + "%"
+    return db.query(sql, [like, like])
