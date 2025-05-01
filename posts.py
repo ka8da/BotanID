@@ -4,6 +4,7 @@ def get_post(post_id):
     sql ="""SELECT  posts.id,
                     posts.title,
                     posts.description,
+                    posts.topic,
                     users.username,
                     users.id as user_id
             FROM    posts, users
@@ -12,9 +13,9 @@ def get_post(post_id):
     result = db.query(sql, [post_id])
     return result[0] if result else None
 
-def add_post(title, description, user_id):
-    sql = "INSERT INTO posts (title, description, user_id) VALUES (?, ?, ?)"
-    db.execute(sql, [title, description, user_id])
+def add_post(title, description, topic, user_id):
+    sql = "INSERT INTO posts (title, description, topic, user_id) VALUES (?, ?, ?, ?)"
+    db.execute(sql, [title, description, topic, user_id])
 
 def get_posts():
     sql = "SELECT id, title FROM posts ORDER BY id DESC"

@@ -9,6 +9,10 @@ import posts
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 def index():
     all_posts = posts.get_posts()
@@ -38,15 +42,19 @@ def new_post():
 @app.route("/create_post", methods=["POST"])
 def create_post():
     title = request.form["title"]
+    if len(title) > 50:
+        abort(403)
     description = request.form["description"]
+    if len(description) > 1000:
+        abort(403)
+    topic = request.form["topic"]
     user_id = session["user_id"]
-
-    posts.add_post(title, description, user_id)
-
+    posts.add_post(title, description, topic, user_id)
     return redirect("/")
 
 @app.route("/edit_post/<int:post_id>")
 def edit_post(post_id):
+    require_login()
     post = posts.get_post(post_id)
     if not post:
         abort(404)
@@ -56,6 +64,7 @@ def edit_post(post_id):
 
 @app.route("/update_post", methods=["POST"])
 def update_post():
+    require_login()
     post_id = request.form["post_id"]
     post = posts.get_post(post_id)
     if not post:
@@ -72,6 +81,7 @@ def update_post():
 
 @app.route("/remove_post/<int:post_id>", methods=["GET", "POST"])
 def remove_post(post_id):
+    require_login()
     post = posts.get_post(post_id)
     if not post:
         abort(404)
@@ -109,8 +119,6 @@ def create_user():
         return "ERROR: username is already taken"
 
     return "Success"
-
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
