@@ -16,9 +16,14 @@
   {% endif %}
 
   <p>
+    {% if not session.username %}
     <a href="/login"> Log in </a>
-    <a href="/register"> Create user </a>
+    <a href="/register"> Create user </a>   
+    {% endif %}
+
+    {% if session.username %}
     <a href="/logout"> Log out </a>
+    {% endif %}
   </p>
 
   <p>

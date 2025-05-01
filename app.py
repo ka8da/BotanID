@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import redirect, render_template, request, session
+from flask import abort, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
@@ -27,6 +27,8 @@ def find_post():
 @app.route("/post/<int:post_id>")
 def show_post(post_id):
     post = posts.get_post(post_id)
+    if not post:
+        abort(404)
     return render_template("show_post.html", post=post)
 
 @app.route("/new_post")
@@ -46,11 +48,21 @@ def create_post():
 @app.route("/edit_post/<int:post_id>")
 def edit_post(post_id):
     post = posts.get_post(post_id)
+    if not post:
+        abort(404)
+    if post["user_id"] != session["user_id"]:
+        abort(403)
     return render_template("edit_post.html", post=post)
 
 @app.route("/update_post", methods=["POST"])
 def update_post():
     post_id = request.form["post_id"]
+    post = posts.get_post(post_id)
+    if not post:
+        abort(404)
+    if post["user_id"] != session["user_id"]:
+        abort(403)
+
     title = request.form["title"]
     description = request.form["description"]
 
@@ -60,6 +72,12 @@ def update_post():
 
 @app.route("/remove_post/<int:post_id>", methods=["GET", "POST"])
 def remove_post(post_id):
+    post = posts.get_post(post_id)
+    if not post:
+        abort(404)
+    if post["user_id"] != session["user_id"]:
+        abort(403)
+
     if request.method == "GET":
         post = posts.get_post(post_id)
         return render_template("remove_post.html", post=post)
@@ -91,6 +109,8 @@ def create_user():
         return "ERROR: username is already taken"
 
     return "Success"
+
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
