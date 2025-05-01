@@ -135,6 +135,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
+    if "user_id" in session:
+        del session["user_id"]
+        del session["username"]
     return redirect("/")
