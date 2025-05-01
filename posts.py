@@ -21,11 +21,12 @@ def get_posts():
     sql = "SELECT id, title FROM posts ORDER BY id DESC"
     return db.query(sql)
 
-def update_post(post_id, title, description):
-    sql = """UPDATE posts   SET   title = ?,
-                                description = ?
+def update_post(post_id, title, description, topic):
+    sql = """UPDATE posts   SET title = ?,
+                                description = ?,
+                                topic = ?
                             WHERE id = ?"""
-    db.execute(sql, [title, description, post_id])
+    db.execute(sql, [title, description, topic, post_id])
 
 def remove_post(post_id):
     sql = "DELETE FROM posts WHERE id = ?"

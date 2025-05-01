@@ -73,9 +73,16 @@ def update_post():
         abort(403)
 
     title = request.form["title"]
+    if not title or len(title) > 50:
+        abort(403)    
     description = request.form["description"]
+    if not description or len(description) > 1000:
+        abort(403)
+    topic = request.form["topic"]
+    if not topic:
+        abort(403)
 
-    posts.update_post(post_id, title, description)
+    posts.update_post(post_id, title, description, topic)
 
     return redirect("/post/" + str(post_id))
 
