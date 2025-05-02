@@ -3,7 +3,6 @@
 
 <head>
   <title>BotanID</title>
-  <link rel="stylesheet" href="mystyle.css">
 </head>
 
 <body>
@@ -17,18 +16,18 @@
 
   <p>
     {% if not session.username %}
-    <a href="/login"> Log in </a>
-    <a href="/register"> Create user </a>   
+    <a href="/login"> Log in </a> <br>
+    <a href="/register"> Create user </a> <br>
     {% endif %}
 
     {% if session.username %}
-    <a href="/logout"> Log out </a>
+    <a href="/logout"> Log out </a> <br>
     {% endif %}
   </p>
 
   <p>
-    <a href="/new_post">Ask the community</a>
-    <a href="/find_post">Search for posts</a>
+    <a href="/new_post">Ask the community</a> <br>
+    <a href="/find_post">Search for posts</a> <br>
   </p>
 
   <h2>All posts</h2>

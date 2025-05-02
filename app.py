@@ -1,13 +1,17 @@
 from flask import Flask, abort, redirect, render_template, request, session
-from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
 import sqlite3
 import posts
 import users
+import base64
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+@app.template_filter('b64encode')
+def b64encode_filter(data):
+    return base64.b64encode(data).decode('utf-8')
 
 def require_login():
     if "user_id" not in session:
@@ -25,6 +29,15 @@ def show_user(user_id):
         abort(404)
     posts = users.get_users_posts(user_id)
     return render_template("show_user.html", user=user, posts=posts)
+
+ALLOWED_TOPICS = {"Plant ID", "Plant care", "Plant hospital"}
+
+@app.route("/posts_by_topic")
+def posts_by_topic(topic):
+    topic = posts.get_by_topic(topic)
+    if not topic:
+        abort(404)
+    return render_template("topics.html", topic=topic)
 
 @app.route("/find_post")
 def find_post():
@@ -52,12 +65,23 @@ def create_post():
     title = request.form["title"]
     if len(title) > 50:
         abort(403)
+
+    image = None
+    if 'image' in request.files:
+        file = request.files['image']
+        if file.filename != '':
+            image = file.read()
+
     description = request.form["description"]
     if len(description) > 1000:
         abort(403)
+
     topic = request.form["topic"]
+    if topic not in ALLOWED_TOPICS:
+        abort(403)
     user_id = session["user_id"]
-    posts.add_post(title, description, topic, user_id)
+
+    posts.add_post(title, image, description, topic, user_id)
     return redirect("/")
 
 @app.route("/edit_post/<int:post_id>")
@@ -79,19 +103,32 @@ def update_post():
         abort(404)
     if post["user_id"] != session["user_id"]:
         abort(403)
-
     title = request.form["title"]
     if not title or len(title) > 50:
-        abort(403)    
+        abort(403)
+
+    remove_image = 'remove_image' in request.form
+    new_image = None
+    
+    if 'new_image' in request.files:
+        file = request.files['new_image']
+        if file.filename != '':
+            new_image = file.read()
+    
+    if remove_image:
+        final_image = None
+    elif new_image:
+        final_image = new_image
+    else:
+        final_image = post["image"]
     description = request.form["description"]
     if not description or len(description) > 1000:
         abort(403)
     topic = request.form["topic"]
-    if not topic:
+    if topic not in ALLOWED_TOPICS:
         abort(403)
 
-    posts.update_post(post_id, title, description, topic)
-
+    posts.update_post(post_id, title, final_image, description, topic)
     return redirect("/post/" + str(post_id))
 
 @app.route("/remove_post/<int:post_id>", methods=["GET", "POST"])

@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>Edit mode</title>
-  <link rel="stylesheet" href="mystyle.css">
+    <title>Edit mode</title>
 </head>
 
 <body>
     <h1>Edit mode</h1>
-    <form action="/update_post" method="post">
+    <form action="/update_post" method="post" enctype="multipart/form-data">
         <p>
             Title: <br />
             <input type="text" name="title" maxlength="50" required value="{{ post.title }}" />
         </p>
+        <p>
+            Current Image:
+            {% if post.image %}
+                <br>
+                <img src="data:image/jpeg;base64,{{ post.image | b64encode }}" style="max-width: 300px; max-height: 300px;">
+                <br>
+                <label>
+                    <input type="checkbox" name="remove_image"> Remove current image
+                </label>
+            {% else %}
+                <em>No image attached</em>
+            {% endif %}
+        </p>
+        
+        <p>
+            New Image (optional): <br />
+            <input type="file" name="new_image">
+        </p>
+
         <p>
             Description: <br />
             <textarea name="description" rows="8" cols="70" maxlength="1000" required >{{ post.description }}</textarea>
         </p>
         <p>
             Topic: <br />
-            <input type="radio" name="topic" value="{{ post.topic }}" required >
+            <input type="radio" id="plantid" name="topic" value="Plant ID" {% if post.topic == "Plant ID" %}checked{% endif %} required>
             <label for="plantid">Plant ID</label><br>
-            <input type="radio" name="topic" value="{{ post.topic }}" required >
+            <input type="radio" id="plantcare" name="topic" value="Plant care" {% if post.topic == "Plant care" %}checked{% endif %} required>
             <label for="plantcare">Plant care</label><br>
+            <input type="radio" id="planthospital" name="topic" value="Plant hospital" {% if post.topic == "Plant hospital" %}checked{% endif %} required>
+            <label for="planthospital">Plant hospital</label><br>
         </p>
         <input type="hidden" name="post_id" value="{{ post.id }}" />        
         <input type="submit" value="Update post" size="10" />

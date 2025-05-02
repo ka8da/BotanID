@@ -13,11 +13,6 @@
         <a href="/remove_post/{{ post.id }}">Delete post</a>
     </p>
     {% endif %}
-    {% if post.image %}
-    <br>
-    <img src="data:image/jpeg;base64,{{ post.image | b64encode }}" style="max-width: 300px; max-height: 300px;">
-    <br>
-    {% endif %}
     <p> 
         {{ post.description }}
     </p>
