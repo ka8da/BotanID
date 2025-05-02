@@ -54,7 +54,9 @@ def show_post(post_id):
     post = posts.get_post(post_id)
     if not post:
         abort(404)
-    return render_template("show_post.html", post=post)
+
+    comments = posts.get_comments(post_id)
+    return render_template("show_post.html", post=post, comments=comments)
 
 @app.route("/new_post")
 def new_post():
@@ -150,6 +152,21 @@ def remove_post(post_id):
             return redirect("/")
         else:
             return redirect("/post/" + str(post_id))
+
+@app.route("/comment", methods=["POST"])
+def comment():
+    require_login()
+    if not request.form["comment"] or len(request.form["comment"]) > 1000:
+        abort(400)
+    comment = request.form["comment"]
+    post_id = request.form["post_id"]
+    post = posts.get_post(post_id)
+    if not post:
+        abort(404)
+    user_id = session["user_id"]
+
+    posts.comment(post_id, user_id, comment)
+    return redirect("/post/" + str(post_id))
 
 @app.route("/register")
 def register():

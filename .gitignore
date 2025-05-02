@@ -8,3 +8,6 @@ database.db
 *.pyc
 *.pyc
 *.pyc
+*.pyc
+/__pycache__
+__pycache__/app.cpython-311.pyc

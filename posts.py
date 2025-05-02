@@ -42,6 +42,17 @@ def find_posts(query):
     like = "%" + query + "%"
     return db.query(sql, [like, like])
 
+def comment(post_id, user_id, comment):
+    sql = "INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)"
+    db.execute(sql, [post_id, user_id, comment])
+
+def get_comments(post_id):
+    sql = """SELECT comments.comment, users.id user_id, users.username
+             FROM comments, users
+             WHERE comments.post_id = ? AND comments.user_id = users.id
+             ORDER BY comments.id DESC"""
+    return db.query(sql, [post_id])
+
 def get_by_topic(topic):
     sql = "SELECT topic FROM posts WHERE topic = ? ORDER BY id"
     return db.query(sql, [topic])
