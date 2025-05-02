@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>User {{ user.username }}</title>
+  <link rel="stylesheet" href="mystyle.css">
+</head>
+
+<body>
+    <h1>User {{ user.username }}</h1>
+    <p>
+        {{ user.username }} has published {{ posts | count }} posts to the community.
+    </p>
+    <h2>Posts</h2>
+    <ul>
+        {% for post in posts %}
+        <li><a href="/post/{{ post.id }}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <p>
+        <a href="/">Go back</a>
+    </p>
+</body>
+
+</html>

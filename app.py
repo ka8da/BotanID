@@ -1,10 +1,10 @@
-from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import Flask, abort, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
 import sqlite3
 import posts
+import users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -17,6 +17,14 @@ def require_login():
 def index():
     all_posts = posts.get_posts()
     return render_template("index.html", posts=all_posts)
+
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+    posts = users.get_users_posts(user_id)
+    return render_template("show_user.html", user=user, posts=posts)
 
 @app.route("/find_post")
 def find_post():
@@ -117,14 +125,12 @@ def create_user():
     password2 = request.form["password2"]
     if password1 != password2:
         return "ERROR: the passwords don't match"
-    password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        users.create_user(username, password1)
     except sqlite3.IntegrityError:
-        return "ERROR: username is already taken"
-
+        return "ERROR: Username is already taken"
+    
     return "Success"
 
 @app.route("/login", methods=["GET", "POST"])
@@ -136,12 +142,8 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT id, password_hash FROM users WHERE username = ?"
-        result = db.query(sql, [username])[0]
-        user_id = result["id"]
-        password_hash = result["password_hash"]
-
-        if check_password_hash(password_hash, password):
+        user_id = users.check_login(username, password)
+        if user_id:
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
