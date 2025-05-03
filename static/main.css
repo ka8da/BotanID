@@ -8,14 +8,14 @@ body {
   }
 
 p {
-    font-size: 1em;
+    font-size: 1.1em;
     font-family: Verdana;
     color:rgb(76, 95, 42);
     margin: 1vw 0vw;
 }
 
 h1 {
-    font-size: 2.6em;
+    font-size: 2.7em;
     font-family: gill sans MT;
     font-weight: bolder;
     color: #38663f;
@@ -24,7 +24,7 @@ h1 {
 }
 
 h2 {
-    font-size: 2.6em;
+    font-size: 2.5em;
     font-family: trebuchet MS;
     font-weight: bolder;
     padding-bottom: 0;
@@ -39,6 +39,14 @@ h3 {
     color: #6D712E;
     margin: 1vw 0vw;
     text-align: center;
+}
+
+h4 {
+    font-size: 0.9em;
+    font-family: Verdana;
+    font-style: italic;
+    color:#6D712E;
+    margin: 0.5vw 0vw;
 }
 
 .header {
@@ -104,4 +112,45 @@ a {
 
 .new_post a {
     color: #ffe398;
+}
+
+input[type="submit"] {
+    color: #ffe398;
+    font-family: tahoma;
+    background: #5d7da5;
+    border: 2px solid #ffe398;
+    width: 7em;
+    border-radius: 19px;
+    padding: 0.4em 0.3em;
+    margin: 0.2em 0.2em;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.comment_wall {
+    border: 1.5px solid rgb(129, 88, 59);
+    border-radius: 14px;
+    padding: 1.1em 1.4em;
+    margin: 1.1em 0em;
+    background-color: #e7d8b9;
+    max-width: 25em;
+}
+
+input[type="submit"][name="back"] {
+    background-color: #808080;
+    color: linen;
+}
+
+input[type="text"][name="query"] {
+    width: 35em;
+    height: 3em;
+    border-radius: 15px;
+    border-style: solid;
+}
+
+.centered-form {
+    width: 300px;
+    margin: 50px auto;
+    padding: 20px;
 }

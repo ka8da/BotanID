@@ -14,10 +14,16 @@
     <h1>{{ post.title }}</h1>
     {% if session.user_id == post.user_id %}
     <p>
-        <a href="/edit_post/{{ post.id }}">Edit post</a>
+        <a href="/edit_post/{{ post.id }}">Edit post</a> | 
         <a href="/remove_post/{{ post.id }}">Delete post</a>
     </p>
     {% endif %}
+    <h4> 
+        Topic: <a href="/posts{{ post.topic }}" >{{ post.topic }}</a>
+    </h4> 
+    <h4>
+        User: <a href="/user/{{ post.user_id }}" >{{ post.username }}</a>
+    </h4>
     {% if post.image %}
     <br>
     <img src="data:image/jpeg;base64,{{ post.image | b64encode }}" style="max-width: 300px; max-height: 300px;">
@@ -26,22 +32,15 @@
     <p> 
         {{ post.description }}
     </p>
-    <p> 
-        Topic: <a href="/posts{{ post.topic }}" >{{ post.topic }}</a>
-    </p> 
-    <p>
-        User: <a href="/user/{{ post.user_id }}" >{{ post.username }}</a>
-    </p>
+
     <h2>Community comments</h2>
 
     {% if comments %}
-        <ul>
-            {% for comment in comments %}
-            <li>{{ comment.comment }}
-                <a href="/user/{{ comment.user_id }}" > {{ comment.username }}</a>  
-            </li>
-            {% endfor %}
-        </ul>
+        {% for comment in comments %}
+        <div class="comment_wall">
+            <a href="/user/{{ comment.user_id }}" > {{ comment.username }}</a>: {{ comment.comment }}
+        </div>
+        {% endfor %}
     {% else %}
         <p>No comments yet. Help them out!</p>
     {% endif %}
@@ -52,9 +51,6 @@
         <textarea name="comment" rows="4" cols="40" maxlength="1000" required></textarea>
         <input type="submit" value="Comment" />
     </form>
-    <p>
-        <a href="/">Go back</a>
-    </p>
 </body>
 {% endblock %}
 </html>

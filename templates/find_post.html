@@ -11,18 +11,14 @@
 </head>
 
 <body>
-  <h1>Search</h1>
+  <h2>What are you looking for?</h2>
 
   <form action="/find_post" method="get">
     <p>
-        Search: <input type="text" name="query" value="{{ query }}">
+      <input type="text" name="query" value="{{ query }}">
     </p>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Search">
   </form>
-
-  <p>
-    <a href="/">Back</a>
-  </p>
 
   {% if query %}
   <h2>Results</h2>

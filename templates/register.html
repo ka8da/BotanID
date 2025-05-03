@@ -11,23 +11,20 @@
 </head>
 
 <body>
-  <form action="/create_user" method="post">
-    <p>
+  <form action="/create_user" method="post" class="centered-form">
+    <h4>
       Username: <br />
       <input type="text" name="username" />
-    </p>
-    <p>
+    </h4>
+    <h4>
       Password: <br />
       <input type="password" name="password1" />
-    </p>
-    <p>
+    </h4>
+    <h4>
       Repeat password: <br />
       <input type="password" name="password2" />
-    </p>
-    <input type="submit" value="Create an account" />
-    <p>
-      <a href="/">Back</a>
-    </p>
+    </h4>
+    <input type="submit" value="Register" />
   </form>
 </body>
 {% endblock %}

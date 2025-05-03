@@ -18,11 +18,8 @@
   <p>
     <a href="/logout">Log out</a>
   </p>
-  <p>
-    <a href="/">Back</a>
-  </p>
   {% else %}
-  <form action="/login" method="post">
+  <form action="/login" method="post" class="centered-form">
     <p>
       Username: <br />
       <input type="text" name="username" />
@@ -32,9 +29,6 @@
       <input type="password" name="password" />
     </p>
     <input type="submit" value="Log in" />
-    <p>
-      <a href="/">Back</a>
-    </p>
   </form>
   {% endif %}
 
