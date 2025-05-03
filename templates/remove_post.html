@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
 
+{% extends "layout.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
 <head>
+  <link rel="stylesheet" href="/static/main.css">
   <title>Delete post</title>
 </head>
 
@@ -14,5 +19,5 @@
         <input type="submit" name="back" value="Go back">
     </form>
 </body>
-
+{% endblock %}
 </html>

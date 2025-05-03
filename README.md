@@ -8,14 +8,11 @@ Here you can share pictures of your mystery plants, ask others for advice, and g
 
 * Users can create accounts and log into the application
 * Users can add, edit and remove posts
+* Users can add photos to the posts
 * Users can pick whether the post fits under different categories (identification, care advice, and help with bug infestations)
 * Users can search for posts
 * Users can see each others' posts
-
-Features that will be added:
-* Users can add photos to the posts
-* Users can comment on others' posts and like comments
-* Users can pick top comments of their posts
+* Users can comment on others' posts
 * Application has a home page and users' profile pages
 
 ## Installation

@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html>
 
+{% extends "layout.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
 <head>
-  <title>BotanID</title>
+  <link rel="stylesheet" href="/static/main.css">
+  <title>Homepage</title>
 </head>
 
 <body>
-  <h1>BotanID</h1>
-
   {% if session.username %}
   <p>
-    You are logged in as {{ session.username }}, your user ID is {{ session.user_id }}
+    <h2>Welcome back, {{ session.username }}</h2>
   </p>
   {% endif %}
 
   <p>
     {% if not session.username %}
-    <a href="/login"> Log in </a> <br>
-    <a href="/register"> Create user </a> <br>
+    <h2>Welcome to the green side. <br></h2>
+    <a href="/login"> Log in </a> |
+    <a href="/register"> Create account </a>
     {% endif %}
 
     {% if session.username %}
@@ -25,18 +29,18 @@
     {% endif %}
   </p>
 
-  <p>
-    <a href="/new_post">Ask the community</a> <br>
-    <a href="/find_post">Search for posts</a> <br>
-  </p>
+  <div class="new_post">
+    <a href="/new_post">Ask the community</a>
+  </div>
 
-  <h2>All posts</h2>
-  <ul>
-      {% for post in posts %}
-      <li><a href="/post/{{ post.id }}">{{ post.title }}</a></li>
-      {% endfor %}
-  </ul>
-
+  <h3>All posts</h3>
+  {% for post in posts %}
+  <div class="post_wall">
+    <a href="/post/{{ post.id }}" style="font-weight: bold;">{{ post.title }}</a> <br />
+    by <a href="/user/{{ post.user_id }}">{{ post.username }}</a> <br />
+    {{ post.comment_count }} comment{% if post.comment_count != 1 %}s{% endif %}
+  </div>
+  {% endfor %}
 </body>
-
+{% endblock %}
 </html>

@@ -1,16 +1,21 @@
 import db
 
 def get_post(post_id):
-    sql ="""SELECT  posts.id,
+    sql = """SELECT  posts.id,
                     posts.title,
                     posts.image,
                     posts.description,
                     posts.topic,
                     users.username,
-                    users.id as user_id
-            FROM    posts, users
-            WHERE   posts.user_id = users.id AND
-                    posts.id = ?"""
+                    users.id as user_id,
+                    COUNT(comments.id) as comment_count
+            FROM    posts
+            JOIN    users ON posts.user_id = users.id
+            LEFT JOIN comments ON comments.post_id = posts.id
+            WHERE   posts.id = ?
+            GROUP BY posts.id, posts.title, posts.image, 
+                     posts.description, posts.topic, 
+                     users.username, users.id"""
     result = db.query(sql, [post_id])
     return result[0] if result else None
 
@@ -19,7 +24,20 @@ def add_post(title, image, description, topic, user_id):
     db.execute(sql, [title, image, description, topic, user_id])
 
 def get_posts():
-    sql = "SELECT id, title FROM posts ORDER BY id DESC"
+    sql = """SELECT posts.id,
+                    posts.title,
+                    posts.image,
+                    posts.description,
+                    posts.topic,
+                    users.username,
+                    users.id as user_id,
+                    COUNT(comments.id) as comment_count
+            FROM    posts
+            JOIN    users ON posts.user_id = users.id
+            LEFT JOIN comments ON comments.post_id = posts.id
+            GROUP BY posts.id, posts.title, posts.image, 
+                    posts.description, posts.topic, 
+                    users.username, users.id"""
     return db.query(sql)
 
 def update_post(post_id, title, image, description, topic):
@@ -47,11 +65,20 @@ def comment(post_id, user_id, comment):
     db.execute(sql, [post_id, user_id, comment])
 
 def get_comments(post_id):
-    sql = """SELECT comments.comment, users.id user_id, users.username
+    sql = """SELECT comments.comment, 
+                    users.id user_id, 
+                    users.username
              FROM comments, users
              WHERE comments.post_id = ? AND comments.user_id = users.id
              ORDER BY comments.id DESC"""
     return db.query(sql, [post_id])
+
+def get_comment_count(post_id):
+    sql = """SELECT COUNT(*) as comment_count 
+             FROM comments 
+             WHERE post_id = ?"""
+    result = db.query(sql, [post_id])
+    return result[0]["comment_count"] if result else 0
 
 def get_by_topic(topic):
     sql = "SELECT topic FROM posts WHERE topic = ? ORDER BY id"

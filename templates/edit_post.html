@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
+
+{% extends "layout.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
 <head>
+    <link rel="stylesheet" href="/static/main.css">
     <title>Edit mode</title>
 </head>
 
@@ -47,5 +53,5 @@
         <input type="submit" value="Update post" size="10" />
     </form>
 </body>
-
+{% endblock %}
 </html>

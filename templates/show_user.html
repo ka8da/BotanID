@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
 
+{% extends "layout.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
 <head>
+  <link rel="stylesheet" href="/static/main.css">
   <title>User {{ user.username }}</title>
 </head>
 
@@ -20,5 +25,5 @@
         <a href="/">Go back</a>
     </p>
 </body>
-
+{% endblock %}
 </html>

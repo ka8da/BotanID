@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
 
+{% extends "layout.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
 <head>
+  <link rel="stylesheet" href="/static/main.css">
   <title>Ask the community</title>
 </head>
 
@@ -11,14 +16,14 @@
     <form action="/create_post" method="post" enctype="multipart/form-data">
         <p>
             Title: <br />
-            <input type="text" name="title" maxlength="50" required />
+            <input type="text" name="title" size="50" maxlength="50" required />
         </p>
         <p>
             Add image: <input type="file" name="image" accept=".jpg, .jpeg" />
         </p>
         <p>
             Description: <br />
-            <textarea name="description" rows="8" cols="70" maxlength="1000" required ></textarea>
+            <textarea name="description" rows="8" cols="50" maxlength="1000" required ></textarea>
         </p>
         <p>
             Topic: <br />
@@ -46,5 +51,5 @@
     </p>
     {% endif %}
 </body>
-
+{% endblock %}
 </html>

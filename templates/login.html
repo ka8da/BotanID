@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
 
+{% extends "layout.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
 <head>
+    <link rel="stylesheet" href="/static/main.css">
   <title>Log in</title>
 </head>
 
@@ -34,5 +39,5 @@
   {% endif %}
 
 </body>
-
+{% endblock %}
 </html>

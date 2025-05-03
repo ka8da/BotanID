@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+  <div class="header">
+    <h1>BotanID</h1>
+  </div>
+
+  <div class="nav">
+    <nav>
+        <a href="/">Homepage</a> |
+        <a href="/find_post">Search</a>
+    </nav>
+  </div>
+
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+
+</html>

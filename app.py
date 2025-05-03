@@ -1,4 +1,5 @@
-from flask import Flask, abort, redirect, render_template, request, session
+from flask import Flask
+from flask import abort, redirect, render_template, request, session
 import config
 import db
 import sqlite3
@@ -54,9 +55,9 @@ def show_post(post_id):
     post = posts.get_post(post_id)
     if not post:
         abort(404)
-
     comments = posts.get_comments(post_id)
-    return render_template("show_post.html", post=post, comments=comments)
+    comment_count = posts.get_comment_count(post_id)
+    return render_template("show_post.html", post=post, comments=comments, comment_count=comment_count)
 
 @app.route("/new_post")
 def new_post():
@@ -84,7 +85,9 @@ def create_post():
     user_id = session["user_id"]
 
     posts.add_post(title, image, description, topic, user_id)
-    return redirect("/")
+
+    post_id = db.last_insert_id()
+    return redirect("/post/" + str(post_id))
 
 @app.route("/edit_post/<int:post_id>")
 def edit_post(post_id):

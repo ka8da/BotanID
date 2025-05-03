@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
 
+{% extends "layout.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
 <head>
+  <link rel="stylesheet" href="/static/main.css">
   <title>{{ post.title }}</title>
 </head>
 
 <body>
     <h1>{{ post.title }}</h1>
-    {% if session.user_id == post.user_id %}
-    <p>
-        <a href="/edit_post/{{ post.id }}">Edit post</a>
-        <a href="/remove_post/{{ post.id }}">Delete post</a>
-    </p>
-    {% endif %}
     <p> 
         {{ post.description }}
     </p>
-    <p> 
-        Topic: <a href="/posts{{ post.topic }}" >{{ post.topic }}</a>
-    </p> 
+    <h2>All posts</h2>
+    <ul>
+        {% for post in posts %}
+        <li><a href="/post/{{ post.id }}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
     <p>
         User: <a href="/user/{{ post.user_id }}" >{{ post.username }}</a>
     </p>
@@ -26,5 +28,5 @@
         <a href="/">Go back</a>
     </p>
 </body>
-
+{% endblock %}
 </html>
