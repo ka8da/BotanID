@@ -23,7 +23,8 @@ def add_post(title, image, description, topic, user_id):
     sql = "INSERT INTO posts (title, image, description, topic, user_id) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [title, image, description, topic, user_id])
 
-def get_posts():
+def get_posts(page=1, per_page=10):
+    offset = (page - 1) * per_page
     sql = """SELECT posts.id,
                     posts.title,
                     posts.image,
@@ -32,13 +33,20 @@ def get_posts():
                     users.username,
                     users.id as user_id,
                     COUNT(comments.id) as comment_count
-            FROM    posts
-            JOIN    users ON posts.user_id = users.id
+            FROM posts
+            JOIN users ON posts.user_id = users.id
             LEFT JOIN comments ON comments.post_id = posts.id
             GROUP BY posts.id, posts.title, posts.image, 
                     posts.description, posts.topic, 
-                    users.username, users.id"""
-    return db.query(sql)
+                    users.username, users.id
+            ORDER BY posts.id DESC
+            LIMIT ? OFFSET ?"""
+    return db.query(sql, [per_page, offset])
+
+def get_total_post_count():
+    sql = "SELECT COUNT(*) FROM posts"
+    result = db.query(sql)
+    return result[0][0] if result else 0
 
 def update_post(post_id, title, image, description, topic):
     sql = """UPDATE posts   SET title = ?,

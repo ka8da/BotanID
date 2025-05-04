@@ -1,11 +1,7 @@
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
-import config
-import db
-import sqlite3
-import posts
-import users
-import base64
+from flask import abort, redirect, render_template, request, session, url_for
+import config, db, posts, users
+import sqlite3, base64, secrets
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -18,10 +14,40 @@ def require_login():
     if "user_id" not in session:
         abort(403)
 
+def check_csrf():
+    if "csrf_token" not in session:
+        abort(403)
+
+    if request.method != "POST":
+        abort(405)
+
+    if "csrf_token" not in request.form:
+        abort(403)
+
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
+
 @app.route("/")
 def index():
-    all_posts = posts.get_posts()
-    return render_template("index.html", posts=all_posts)
+    page = request.args.get("page", 1, type=int)
+    per_page = 10
+
+    posts_to_show = posts.get_posts(page=page, per_page=per_page)
+
+    total_posts = posts.get_total_post_count()
+    total_pages = (total_posts + per_page -1) // per_page
+
+    if page < 1:
+        return redirect(url_for('index', page=1))
+    if page > total_pages and total_pages > 0:
+        return redirect(url_for('index', page=total_pages))
+
+    return render_template(
+        "index.html",
+        posts=posts_to_show,
+        page=page,
+        total_pages=total_pages
+    )
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
@@ -91,6 +117,7 @@ def create_post():
 
 @app.route("/edit_post/<int:post_id>")
 def edit_post(post_id):
+    check_csrf()
     require_login()
     post = posts.get_post(post_id)
     if not post:
@@ -101,6 +128,7 @@ def edit_post(post_id):
 
 @app.route("/update_post", methods=["POST"])
 def update_post():
+    check_csrf()
     require_login()
     post_id = request.form["post_id"]
     post = posts.get_post(post_id)
@@ -138,6 +166,7 @@ def update_post():
 
 @app.route("/remove_post/<int:post_id>", methods=["GET", "POST"])
 def remove_post(post_id):
+    check_csrf()
     require_login()
     post = posts.get_post(post_id)
     if not post:
@@ -158,6 +187,7 @@ def remove_post(post_id):
 
 @app.route("/comment", methods=["POST"])
 def comment():
+    check_csrf()
     require_login()
     if not request.form["comment"] or len(request.form["comment"]) > 1000:
         abort(400)
@@ -202,6 +232,7 @@ def login():
         user_id = users.check_login(username, password)
         if user_id:
             session["user_id"] = user_id
+            session["csrf_token"] = secrets.token_hex(16)
             session["username"] = username
             return redirect("/")
         else:
@@ -209,6 +240,7 @@ def login():
 
 @app.route("/logout")
 def logout():
+    require_login()
     if "user_id" in session:
         del session["user_id"]
         del session["username"]
