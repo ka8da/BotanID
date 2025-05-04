@@ -35,3 +35,14 @@ Run the application:
 $ flask run
 ```
 
+## Testing with mass amounts of data done
+
+* 1,000 users
+* 10^5 posts
+* 10^6 comments
+
+elapsed time: 4.49 s
+
+* after adding indexes: 
+elapsed time: 4.57 s
+(which tells me I did not do it correctly)
