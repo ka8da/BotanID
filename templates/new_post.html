@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-
 {% extends "layout.html" %}
 {% block title %}Posts{% endblock %}
 
@@ -36,6 +33,7 @@
             <input type="radio" id="Plant hospital" name="topic" value="Plant hospital" required>
             <label for="planthospital">Plant hospital</label><br>
         </p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Post" size="10" />
     </form>
     {% else %}
@@ -46,4 +44,3 @@
     {% endif %}
 </body>
 {% endblock %}
-</html>

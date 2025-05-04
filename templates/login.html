@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-
 {% extends "layout.html" %}
 {% block title %}Posts{% endblock %}
 
@@ -13,7 +10,7 @@
 <body>
   {% if session.username %}
   <p>
-    You are logged in as {{ session.username }}
+    You are logged in as {{ session.username | safe }}
   </p>
   <p>
     <a href="/logout">Log out</a>
@@ -28,10 +25,10 @@
       Password: <br />
       <input type="password" name="password" />
     </p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Log in" />
   </form>
   {% endif %}
 
 </body>
 {% endblock %}
-</html>

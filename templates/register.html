@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-
 {% extends "layout.html" %}
 {% block title %}Posts{% endblock %}
 
@@ -24,8 +21,8 @@
       Repeat password: <br />
       <input type="password" name="password2" />
     </h4>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Register" />
   </form>
 </body>
 {% endblock %}
-</html>

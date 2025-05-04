@@ -1,26 +1,22 @@
-<!DOCTYPE html>
-<html>
-
 {% extends "layout.html" %}
 {% block title %}Posts{% endblock %}
 
 {% block content %}
 <head>
   <link rel="stylesheet" href="/static/main.css">
-  <title>User {{ user.username }}</title>
+  <title>User {{ user.username | safe }}</title>
 </head>
 
 <body>
-    <h1>User {{ user.username }}</h1>
+    <h1>User {{ user.username | safe }}</h1>
     <p>
-        {{ user.username }} has published {{ posts | count }} posts to the community.
+        {{ user.username | safe }} has published {{ posts | count }} posts to the community.
     </p>
     <h2>Posts</h2>
     <ul>
         {% for post in posts %}
-        <li><a href="/post/{{ post.id }}">{{ post.title }}</a></li>
+        <li><a href="/post/{{ post.id }}">{{ post.title | safe }}</a></li>
         {% endfor %}
     </ul>
 </body>
 {% endblock %}
-</html>

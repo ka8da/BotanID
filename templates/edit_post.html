@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-
 {% extends "layout.html" %}
 {% block title %}Posts{% endblock %}
 
@@ -15,7 +12,7 @@
     <form action="/update_post" method="post" enctype="multipart/form-data">
         <p>
             Title: <br />
-            <input type="text" name="title" maxlength="50" required value="{{ post.title }}" />
+            <input type="text" name="title" maxlength="50" required value="{{ post.title | safe }}" />
         </p>
         <p>
             Current Image:
@@ -38,7 +35,7 @@
 
         <p>
             Description: <br />
-            <textarea name="description" rows="8" cols="70" maxlength="1000" required >{{ post.description }}</textarea>
+            <textarea name="description" rows="8" cols="70" maxlength="1000" required >{{ post.description | safe }}</textarea>
         </p>
         <p>
             Topic: <br />
@@ -49,9 +46,9 @@
             <input type="radio" id="planthospital" name="topic" value="Plant hospital" {% if post.topic == "Plant hospital" %}checked{% endif %} required>
             <label for="planthospital">Plant hospital</label><br>
         </p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="post_id" value="{{ post.id }}" />        
         <input type="submit" value="Update post" size="10" />
     </form>
 </body>
 {% endblock %}
-</html>
