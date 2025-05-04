@@ -21,10 +21,30 @@
   <h2>Results</h2>
   {% endif %}
 
-  <ul>
-    {% for post in results %}
-    <li><a href="/post/{{ post.id }}">{{ post.title | safe }}</a></li>
+  {% for post in results %}
+  <div class="post_wall">
+      <a href="/post/{{ post.id }}" style="font-weight: bold;">{{ post.title | safe }}</a> <br />
+      by <a href="/user/{{ post.user_id }}">{{ post.username | safe }}</a>
+  </div>
+  {% endfor %}
+
+  <div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('find_post', query=query, page=page-1) }}">&laquo; Previous</a>
+    {% endif %}
+    
+    {% for p in range(1, total_pages+1) %}
+        {% if p == page %}
+            <strong>{{ p }}</strong>
+        {% else %}
+            <a href="{{ url_for('find_post', query=query, page=p) }}">{{ p }}</a>
+        {% endif %}
     {% endfor %}
-  </ul>
+
+    {% if page < total_pages %}
+        <a href="{{ url_for('find_post', query=query, page=page+1) }}">Next &raquo;</a>
+    {% endif %}
+</div>
+
 </body>
 {% endblock %}

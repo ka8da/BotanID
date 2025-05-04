@@ -37,6 +37,7 @@
             Description: <br />
             <textarea name="description" rows="8" cols="70" maxlength="1000" required >{{ post.description | safe }}</textarea>
         </p>
+
         <p>
             Topic: <br />
             <input type="radio" id="plantid" name="topic" value="Plant ID" {% if post.topic == "Plant ID" %}checked{% endif %} required>

@@ -4,19 +4,28 @@
 {% block content %}
 <head>
   <link rel="stylesheet" href="/static/main.css">
-  <title>User {{ user.username | safe }}</title>
+  <title>{{ user.username | safe }}'s profile</title>
 </head>
 
 <body>
-    <h1>User {{ user.username | safe }}</h1>
-    <p>
-        {{ user.username | safe }} has published {{ posts | count }} posts to the community.
-    </p>
-    <h2>Posts</h2>
-    <ul>
+    <h2>You are viewing {{ user.username | safe }}'s profile</h2>
+    <div class="user-stats">
+        <p>
+            {{ posts | count }} post{% if posts | count != 1 %}s{% endif %} published <br />
+            {{ comment_count }} comment{% if comment_count != 1 %}s{% endif %} made
+        </p>
+    </div>
+
+    <h3>Posts</h3>
+    {% if posts %}
         {% for post in posts %}
-        <li><a href="/post/{{ post.id }}">{{ post.title | safe }}</a></li>
+        <div class="post_wall">
+        <a href="/post/{{ post.id }}" style="font-weight: bold;">{{ post.title | safe }}</a> <br />
+        {{ post.comment_count }} comment{% if post.comment_count != 1 %}s{% endif %}
+        </div>
         {% endfor %}
-    </ul>
+    {% else %}
+        <p>{{ user.username | safe }} hasn't posted anything yet.</p>
+    {% endif %}
 </body>
 {% endblock %}

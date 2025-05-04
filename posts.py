@@ -60,13 +60,33 @@ def remove_post(post_id):
     sql = "DELETE FROM posts WHERE id = ?"
     db.execute(sql, [post_id])
 
-def find_posts(query):
-    sql = """   SELECT id, title
-                FROM posts
-                WHERE description LIKE ? OR title LIKE ?
-                ORDER BY id DESC"""
-    like = "%" + query + "%"
-    return db.query(sql, [like, like])
+def search_posts(query, page=1, per_page=10):
+    offset = (page - 1) * per_page
+    sql = """SELECT posts.id,
+                    posts.title,
+                    posts.description,
+                    posts.topic,
+                    users.username,
+                    users.id as user_id,
+                    COUNT(comments.id) as comment_count
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            LEFT JOIN comments ON comments.post_id = posts.id
+            WHERE posts.title LIKE ? OR posts.description LIKE ?
+            GROUP BY posts.id, posts.title, posts.description, 
+                    posts.topic, users.username, users.id
+            ORDER BY posts.id DESC
+            LIMIT ? OFFSET ?"""
+    search_term = f"%{query}%"
+    return db.query(sql, [search_term, search_term, per_page, offset])
+
+def get_search_count(query):
+    sql = """SELECT COUNT(DISTINCT posts.id)
+             FROM posts
+             WHERE posts.title LIKE ? OR posts.description LIKE ?"""
+    search_term = f"%{query}%"
+    result = db.query(sql, [search_term, search_term])
+    return result[0][0] if result else 0
 
 def comment(post_id, user_id, comment):
     sql = "INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)"
@@ -88,6 +108,35 @@ def get_comment_count(post_id):
     result = db.query(sql, [post_id])
     return result[0]["comment_count"] if result else 0
 
-def get_by_topic(topic):
-    sql = "SELECT topic FROM posts WHERE topic = ? ORDER BY id"
-    return db.query(sql, [topic])
+def get_comment_count_by_user(user_id):
+    sql = """SELECT COUNT(*) as comment_count 
+             FROM comments 
+             WHERE user_id = ?"""
+    result = db.query(sql, [user_id])
+    return result[0]["comment_count"] if result else 0
+
+def get_by_topic(topic, page=1, per_page=10):
+    offset = (page - 1) * per_page
+    sql = """SELECT posts.id,
+                    posts.title,
+                    posts.image,
+                    posts.description,
+                    posts.topic,
+                    users.username,
+                    users.id as user_id,
+                    COUNT(comments.id) as comment_count
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            LEFT JOIN comments ON comments.post_id = posts.id
+            WHERE posts.topic = ?
+            GROUP BY posts.id, posts.title, posts.image, 
+                    posts.description, posts.topic, 
+                    users.username, users.id
+            ORDER BY posts.id DESC
+            LIMIT ? OFFSET ?"""
+    return db.query(sql, [topic, per_page, offset])
+
+def get_post_count_by_topic(topic):
+    sql = "SELECT COUNT(*) FROM posts WHERE topic = ?"
+    result = db.query(sql, [topic])
+    return result[0][0] if result else 0

@@ -8,20 +8,14 @@
 </head>
 
 <body>
-  {% if session.username %}
-  <p>
-    <h2>Welcome back, {{ session.username | safe }}</h2>
-  </p>
-  {% endif %}
-
   <p>
     {% if not session.username %}
     <h2>Welcome to the green side. <br></h2>
     <a href="/login"> Log in </a> |
     <a href="/register"> Create account </a>
     {% endif %}
-
     {% if session.username %}
+    <h2>Welcome back, {{ session.username | safe }}</h2>
     <a href="/logout"> Log out </a> <br>
     {% endif %}
   </p>
@@ -31,6 +25,12 @@
   </div>
 
   <h3>All posts</h3>
+  <div class="topic-nav">
+    Browse by topic: 
+    <a href="{{ url_for('posts_by_topic', topic='Plant ID') }}">Plant ID</a> |
+    <a href="{{ url_for('posts_by_topic', topic='Plant care') }}">Plant care</a> |
+    <a href="{{ url_for('posts_by_topic', topic='Plant hospital') }}">Plant hospital</a>
+  </div>
   {% for post in posts %}
   <div class="post_wall">
     <a href="/post/{{ post.id }}" style="font-weight: bold;">{{ post.title | safe }}</a> <br />

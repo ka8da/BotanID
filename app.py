@@ -2,9 +2,12 @@ from flask import Flask
 from flask import abort, redirect, render_template, request, session, url_for
 import config, db, posts, users
 import sqlite3, base64, secrets
+import time
+from flask import g
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+ALLOWED_TOPICS = {"Plant ID", "Plant care", "Plant hospital"}
 
 @app.template_filter('b64encode')
 def b64encode_filter(data):
@@ -12,7 +15,8 @@ def b64encode_filter(data):
 
 def require_login():
     if "user_id" not in session:
-        abort(403)
+        session['next_url'] = request.url
+        return redirect(url_for('register'))
 
 def check_csrf():
     if "csrf_token" not in session:
@@ -30,7 +34,7 @@ def check_csrf():
 @app.route("/")
 def index():
     page = request.args.get("page", 1, type=int)
-    per_page = 10
+    per_page = 48
 
     posts_to_show = posts.get_posts(page=page, per_page=per_page)
 
@@ -54,27 +58,61 @@ def show_user(user_id):
     user = users.get_user(user_id)
     if not user:
         abort(404)
-    posts = users.get_users_posts(user_id)
-    return render_template("show_user.html", user=user, posts=posts)
 
-ALLOWED_TOPICS = {"Plant ID", "Plant care", "Plant hospital"}
+    user_posts = users.get_users_posts(user_id)
+    comment_count = posts.get_comment_count_by_user(user_id)
 
-@app.route("/posts_by_topic")
+    return render_template(
+        "show_user.html",
+        user=user,
+        posts=user_posts,
+        comment_count=comment_count)
+
+@app.route("/posts_by_topic/<topic>")
 def posts_by_topic(topic):
-    topic = posts.get_by_topic(topic)
-    if not topic:
+    if topic not in ALLOWED_TOPICS:
         abort(404)
-    return render_template("topics.html", topic=topic)
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 48
+    
+    posts_to_show = posts.get_by_topic(topic, page=page, per_page=per_page)
+
+    total_posts = posts.get_post_count_by_topic(topic)
+    total_pages = (total_posts + per_page - 1) // per_page
+
+    if page < 1:
+        return redirect(url_for('posts_by_topic', topic=topic, page=1))
+    if page > total_pages and total_pages > 0:
+        return redirect(url_for('posts_by_topic', topic=topic, page=total_pages))
+
+    return render_template(
+        "topics.html",
+        posts=posts_to_show, 
+        topic=topic,
+        page=page,
+        total_pages=total_pages)
 
 @app.route("/find_post")
 def find_post():
-    query = request.args.get("query")
+    query = request.args.get("query", "").strip()
+    page = request.args.get("page", 1, type=int)
+    per_page = 48
+    
     if query:
-        results = posts.find_posts(query)
+        results = posts.search_posts(query, page=page, per_page=per_page)
+        total_results = posts.get_search_count(query)
+        total_pages = (total_results + per_page - 1) // per_page
     else:
-        query = ""
         results = []
-    return render_template("find_post.html", query=query, results=results)
+        total_pages = 0
+    
+    return render_template(
+        "find_post.html",
+        query=query,
+        results=results,
+        page=page,
+        total_pages=total_pages)
 
 @app.route("/post/<int:post_id>")
 def show_post(post_id):
@@ -215,10 +253,11 @@ def create_user():
 
     try:
         users.create_user(username, password1)
+        next_url = session.pop("next_url", None)
+        return redirect(next_url or url_for("index"))
+    
     except sqlite3.IntegrityError:
         return "ERROR: Username is already taken"
-    
-    return "Success"
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -245,3 +284,13 @@ def logout():
         del session["user_id"]
         del session["username"]
     return redirect("/")
+
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response

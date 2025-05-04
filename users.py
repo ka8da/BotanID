@@ -7,7 +7,18 @@ def get_user(user_id):
     return result[0] if result else None
 
 def get_users_posts(user_id):
-    sql ="SELECT id, title FROM posts WHERE user_id = ? ORDER BY id DESC"
+    sql = """SELECT posts.id,
+                    posts.title,
+                    posts.description,
+                    posts.topic,
+                    posts.image,
+                    COUNT(comments.id) as comment_count
+            FROM posts
+            LEFT JOIN comments ON comments.post_id = posts.id
+            WHERE posts.user_id = ?
+            GROUP BY posts.id, posts.title, posts.description, 
+                    posts.topic, posts.image
+            ORDER BY posts.id DESC"""
     return db.query(sql, [user_id])
 
 def create_user(username, password1):

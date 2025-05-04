@@ -4,22 +4,45 @@
 {% block content %}
 <head>
   <link rel="stylesheet" href="/static/main.css">
-  <title>{{ post.title | safe }}</title>
+  <title>{{ topic }} Posts</title>
 </head>
 
 <body>
-    <h1>{{ post.title | safe }}</h1>
-    <p> 
-        {{ post.description | safe }}
-    </p>
-    <h2>All posts</h2>
-    <ul>
-        {% for post in posts %}
-        <li><a href="/post/{{ post.id }}">{{ post.title | safe }}</a></li>
+    <h3>Posts about {{ topic }}</h3>
+
+    <div class="topic-nav">
+        Topics: 
+        <a href="{{ url_for('posts_by_topic', topic='Plant ID') }}">Plant ID</a> |
+        <a href="{{ url_for('posts_by_topic', topic='Plant care') }}">Plant care</a> |
+        <a href="{{ url_for('posts_by_topic', topic='Plant hospital') }}">Plant hospital</a>
+      </div>
+
+
+    {% for post in posts %}
+    <div class="post_wall">
+        <a href="/post/{{ post.id }}" style="font-weight: bold;">{{ post.title | safe }}</a> <br />
+        by <a href="/user/{{ post.user_id }}">{{ post.username | safe }}</a> <br />
+        {{ post.comment_count }} comment{% if post.comment_count != 1 %}s{% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('posts_by_topic', topic=topic, page=page-1)}}">&laquo; Previous</a>
+        {% endif %}
+        
+        {% for p in range(1, total_pages+1) %}
+            {% if p == page %}
+                <strong>{{ p }}</strong>
+            {% else %}
+                <a href="{{ url_for('posts_by_topic', topic=topic, page=p) }}">{{ p }}</a>
+            {% endif %}
         {% endfor %}
-    </ul>
-    <p>
-        User: <a href="/user/{{ post.user_id }}" >{{ post.username | safe }}</a>
-    </p>
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('posts_by_topic', topic=topic, page=page+1) }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+
 </body>
 {% endblock %}

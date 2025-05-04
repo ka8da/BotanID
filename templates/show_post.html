@@ -8,45 +8,56 @@
 </head>
 
 <body>
-    <h1>{{ post.title | safe }}</h1>
-    {% if session.user_id == post.user_id %}
-    <p>
-        <a href="/edit_post/{{ post.id }}">Edit post</a> | 
-        <a href="/remove_post/{{ post.id }}">Delete post</a>
-    </p>
-    {% endif %}
-    <h4> 
-        Topic: <a href="/posts{{ post.topic | safe }}" >{{ post.topic }}</a>
-    </h4> 
-    <h4>
-        User: <a href="/user/{{ post.user_id }}" >{{ post.username }}</a>
-    </h4>
-    {% if post.image %}
-    <br>
-    <img src="data:image/jpeg;base64,{{ post.image | b64encode }}" style="max-width: 300px; max-height: 300px;">
-    <br>
-    {% endif %}
-    <p> 
-        {{ post.description | safe }}
-    </p>
-
-    <h2>Community comments</h2>
-
-    {% if comments %}
-        {% for comment in comments %}
-        <div class="comment_wall">
-            <a href="/user/{{ comment.user_id }}" > {{ comment.username | safe }}</a>: {{ comment.comment | safe }}
+    <div class="post-container">
+        <h1>{{ post.title | safe }}</h1>
+        
+        {% if session.user_id == post.user_id %}
+        <div class="post-actions">
+            <a href="/edit_post/{{ post.id }}">Edit</a> | 
+            <a href="/remove_post/{{ post.id }}">Delete</a>
         </div>
-        {% endfor %}
-    {% else %}
-        <p>No comments yet. Help them out!</p>
-    {% endif %}
+        {% endif %}
+        
+        <div class="post-meta">
+            <span class="topic">Topic: <a href="/posts{{ post.topic | safe }}">{{ post.topic }}</a></span>
+            <span class="author">By: <a href="/user/{{ post.user_id }}">{{ post.username }}</a></span>
+        </div>
+        
+        {% if post.image %}
+        <div class="post-image">
+            <img src="data:image/jpeg;base64,{{ post.image | b64encode }}" alt="{{ post.title }}">
+        </div>
+        {% endif %}
+        
+        <div class="description">{{ post.description | safe }}</div>
+    </div>
+
+    <div class="comments-section">
+        <h2>Community comments</h2>
+
+        {% if comments %}
+            {% for comment in comments %}
+            <div class="comment_wall">
+                <a href="/user/{{ comment.user_id }}">{{ comment.username | safe }}</a>: {{ comment.comment | safe }}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No comments yet. Help them out!</p>
+        {% endif %}
+    </div>
     
+    {% if not session.user_id %}
+    <div class="login-prompt">
+        <p>You need to <a href="{{ url_for('login') }}">log in</a> or <a href="{{ url_for('register') }}">create an account</a> to comment.</p>
+    </div>
+    {% else %}
     <form action="/comment" method="post">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="post_id" value="{{ post.id }}">
         <textarea name="comment" rows="4" cols="40" maxlength="1000" required></textarea>
         <input type="submit" value="Comment" />
     </form>
+    {% endif %}
+    
 </body>
 {% endblock %}

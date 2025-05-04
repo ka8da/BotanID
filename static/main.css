@@ -1,14 +1,14 @@
 body {
     margin:auto;
     margin-top: 2.5vw;
-    max-width: 40em;
+    max-width: 50em;
     font-family: verdana;
     background-color: #f2e9d8;
     font-size: 1.1em;
   }
 
 p {
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-family: Verdana;
     color:rgb(76, 95, 42);
     margin: 1vw 0vw;
@@ -42,7 +42,7 @@ h3 {
 }
 
 h4 {
-    font-size: 0.9em;
+    font-size: 1em;
     font-family: Verdana;
     font-style: italic;
     color:#6D712E;
@@ -86,7 +86,7 @@ a {
 }
 
 .content {
-    max-width: 40em;
+    max-width: 50em;
 }
 
 .post_wall {
@@ -143,14 +143,128 @@ input[type="submit"][name="back"] {
 }
 
 input[type="text"][name="query"] {
-    width: 35em;
-    height: 3em;
+    width: 25em;
+    height: 2.5em;
+    border-radius: 30px;
+    border-style: solid;
+    background-color: #f5f2e9;
+    padding: 2px 20px;
+}
+
+input[type="text"] {
+    background-color: #f5f2e9;
     border-radius: 15px;
     border-style: solid;
+    padding: 6px;
+    font-size: larger;
+}
+
+input[type="password"] {
+    background-color: #f5f2e9;
+    border-radius: 15px;
+    border-style: solid;
+    padding: 6px;
+    font-size: larger;
+}
+
+textarea {
+    background-color: #f5f2e9;
+    border-radius: 15px;
+    border-style: solid;
+    font-size: large;
+    padding: 6px;
+
 }
 
 .centered-form {
     width: 300px;
     margin: 50px auto;
     padding: 20px;
+}
+
+.topic-nav {
+    font-size: 1em;
+    font-family: Verdana;
+    font-style: italic;
+    color:#6D712E;
+    margin: 0.5vw 0vw;
+}
+
+.pagination {
+    font-size: 1.3em;
+    text-align: center;
+    margin-bottom: 4em;
+    font-family: calibri;
+}
+
+.post-container {
+    word-wrap: break-word;
+    margin: 20px auto;
+    padding: 20px;
+    line-height: 1.5;
+    border: 3px solid rgb(129, 88, 59);
+    border-radius: 14px;
+    background-color: #ede6d7;
+    color: #38663f;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 800px;
+    width: 90%;
+    position: relative;
+}
+
+.post-container h1 {
+    color: #2a4d30;
+    margin: 0 0 15px 0;
+    padding-right: 120px;
+    word-break: break-word;
+}
+
+.post-meta {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 15px 0;
+    font-size: 1.2em;
+}
+
+.post-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+    border: 1px solid rgb(129, 88, 59);
+}
+
+.post-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 0.9em;
+}
+
+.description {
+    margin: 15px 0;
+    padding: 0;
+    font-size: 1.3em;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.comments-section {
+    max-width: 800px;
+    width: 90%;
+    margin: 30px auto;
+    padding: 0 10px;
+}
+
+form[action="/comment"] {
+    max-width: 800px;
+    width: 90%;
+    margin: 20px auto;
+    padding: 0 10px;
+}
+
+.login-prompt {
+    margin-bottom: 40px;
+    text-align: center;
+    font-size: medium;
 }
